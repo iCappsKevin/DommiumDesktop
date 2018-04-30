@@ -2,18 +2,18 @@ import Framework from './framework';
 
 class PythonFramework extends Framework {
 
-  get language () {
+  get language() {
     return "python";
   }
 
-  getPythonVal (jsonVal) {
+  getPythonVal(jsonVal) {
     if (typeof jsonVal === 'boolean') {
       return jsonVal ? "True" : "False";
     }
     return JSON.stringify(jsonVal);
   }
 
-  wrapWithBoilerplate (code) {
+  wrapWithBoilerplate(code) {
     let capStr = Object.keys(this.caps).map((k) => {
       return `caps[${JSON.stringify(k)}] = ${this.getPythonVal(this.caps[k])}`;
     }).join("\n");
@@ -32,7 +32,7 @@ ${code}
 driver.quit()`;
   }
 
-  codeFor_findAndAssign (strategy, locator, localVar, isArray) {
+  codeFor_findAndAssign(strategy, locator, localVar, isArray) {
     let suffixMap = {
       xpath: "xpath",
       'accessibility id': 'accessibility_id',
@@ -53,33 +53,42 @@ driver.quit()`;
     }
   }
 
-  codeFor_click (varName, varIndex) {
-    return `${this.getVarName(varName, varIndex)}.click()`;
+  codeFor_assert(varName, varIndex, assertion) {
+    return (`try:\n`
+      + ` assert ${this.getVarName(varName, varIndex)}.text == "${assertion}" \n`
+      + ` print "Test succesfull" \n`
+      + `except AssertionError as e: \n`
+      + ` print "Test failed: " + e.message \n`
+    );
   }
 
-  codeFor_clear (varName, varIndex) {
-    return `${this.getVarName(varName, varIndex)}.clear()`;
+  codeFor_click(varName, varIndex) {
+    return `${this.getVarName(varName, varIndex)}.click() `;
   }
 
-  codeFor_sendKeys (varName, varIndex, text) {
-    return `${this.getVarName(varName, varIndex)}.send_keys(${JSON.stringify(text)})`;
+  codeFor_clear(varName, varIndex) {
+    return `${this.getVarName(varName, varIndex)}.clear() `;
   }
 
-  codeFor_back () {
-    return `driver.back()`;
+  codeFor_sendKeys(varName, varIndex, text) {
+    return `${this.getVarName(varName, varIndex)}.send_keys(${JSON.stringify(text)}) `;
   }
 
-  codeFor_tap (varNameIgnore, varIndexIgnore, x, y) {
-    return `TouchAction(driver).tap(x=${x}, y=${y}).perform()`;
+  codeFor_back() {
+    return `driver.back() `;
   }
 
-  codeFor_swipe (varNameIgnore, varIndexIgnore, x1, y1, x2, y2) {
+  codeFor_tap(varNameIgnore, varIndexIgnore, x, y) {
+    return `TouchAction(driver).tap(x = ${x}, y = ${y}).perform() `;
+  }
+
+  codeFor_swipe(varNameIgnore, varIndexIgnore, x1, y1, x2, y2) {
     return `TouchAction(driver)
-  .press(x=${x1}, y=${y1})
-  .move_to(x=${x2}, y=${y2})
-  .release()
-  .perform()
-    `;
+      .press(x = ${ x1}, y = ${y1})
+      .move_to(x = ${ x2}, y = ${y2})
+      .release()
+      .perform()
+      `;
   }
 }
 

@@ -27,8 +27,8 @@ export default class SelectedElement extends Component {
   }
 
   handleAssert() {
-    const { assert, hideAssertModal, selectedElementId: elementId } = this.props;
-    
+    const { assert, hideAssertModal, applyClientMethod, selectedElementId: elementId } = this.props;
+    applyClientMethod({ methodName: 'click', elementId }, assert);
     hideAssertModal();
   }
 

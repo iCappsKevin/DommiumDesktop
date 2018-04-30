@@ -6,7 +6,7 @@ import {
   UNSELECT_HOVERED_ELEMENT, METHOD_CALL_REQUESTED, METHOD_CALL_DONE,
   SET_FIELD_VALUE, SET_EXPANDED_PATHS, SHOW_SEND_KEYS_MODAL,
   HIDE_SEND_KEYS_MODAL, SHOW_ASSERT_MODAL, HIDE_ASSERT_MODAL, START_RECORDING, PAUSE_RECORDING, CLEAR_RECORDING,
-  SET_ACTION_FRAMEWORK, RECORD_ACTION, CLOSE_RECORDER, SET_SHOW_BOILERPLATE, SET_SESSION_DETAILS,
+  SET_ACTION_FRAMEWORK, RECORD_ACTION, RECORD_ASSERTION, CLOSE_RECORDER, SET_SHOW_BOILERPLATE, SET_SESSION_DETAILS,
   SHOW_LOCATOR_TEST_MODAL, HIDE_LOCATOR_TEST_MODAL, SET_LOCATOR_TEST_STRATEGY, SET_LOCATOR_TEST_VALUE,
   SEARCHING_FOR_ELEMENTS, SEARCHING_FOR_ELEMENTS_COMPLETED, SET_LOCATOR_TEST_ELEMENT, CLEAR_SEARCH_RESULTS,
   ADD_ASSIGNED_VAR_CACHE, CLEAR_ASSIGNED_VAR_CACHE, SET_SCREENSHOT_INTERACTION_MODE,
@@ -22,6 +22,7 @@ const INITIAL_STATE = {
   showRecord: false,
   showBoilerplate: false,
   recordedActions: [],
+  recordedAssertions: [],
   actionFramework: DEFAULT_FRAMEWORK,
   sessionDetails: {},
   isLocatorTestModalVisible: false,
@@ -196,6 +197,15 @@ export default function inspector(state = INITIAL_STATE, action) {
         ...state,
         recordedActions: [
           ...state.recordedActions,
+          { action: action.action, params: action.params }
+        ]
+      };
+
+    case RECORD_ASSERTION:
+      return {
+        ...state,
+        recordedAssertions: [
+          ...state.recordedAssertions,
           { action: action.action, params: action.params }
         ]
       };
